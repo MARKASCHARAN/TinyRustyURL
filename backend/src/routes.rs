@@ -28,7 +28,7 @@ pub async fn shorten(
         .arg(&id)
         .arg(&req.url)
         .arg("EX")
-        .arg(60 * 60 * 24 * 30)  // 30 days
+        .arg(60 * 60 * 24 * 30)  
         .query_async::<_, String>(&mut conn)
         .await
     {
@@ -52,7 +52,7 @@ pub async fn redirect(
 ) -> HttpResponse {
     let mut conn = pool.get_ref().clone();
     
-    // Get URL with proper error handling
+
     let url: String = match conn.get(&*id).await {
         Ok(Some(url)) => url,
         Ok(None) => {
@@ -69,7 +69,7 @@ pub async fn redirect(
         }
     };
 
-    // Track click with explicit type annotations
+
     if let Err(e) = track_click(&mut conn, &id).await {
         log::warn!("Click tracking failed for {}: {}", id, e);
     }
@@ -83,13 +83,9 @@ async fn track_click(
     conn: &mut ConnectionManager,
     id: &str,
 ) -> Result<(), RedisError> {
-    // Ensure clicks counter exists as integer
+    
     let _: () = conn.set_nx(format!("clicks:{}", id), 0).await?;
-    
-    // Atomic increment with explicit type
     let _: i64 = conn.incr(format!("clicks:{}", id), 1).await?;
-    
-    // Track detailed click with explicit type
     let _: () = conn.zadd(
         format!("clicks:detailed:{}", id),
         Utc::now().timestamp(),
@@ -106,7 +102,6 @@ pub async fn get_stats(
 ) -> impl Responder {
     let mut conn = pool.get_ref().clone();
     
-    // First validate data
     if let Err(e) = validate_redis_data(&mut conn, &id).await {
         log::error!("Data validation failed for {}: {}", id, e);
     }
@@ -132,7 +127,7 @@ async fn validate_redis_data(
     conn: &mut ConnectionManager,
     id: &str,
 ) -> Result<(), RedisError> {
-    // Convert any invalid click count to 0 with explicit type
+   
     let _: i64 = match conn.get(format!("clicks:{}", id)).await {
         Ok(num) => num,
         Err(_) => {
@@ -152,7 +147,7 @@ async fn get_click_stats(
         .get(format!("clicks:{}", id))
         .zcount(
             format!("clicks:detailed:{}", id),
-            now - 86400,  // 24h ago
+            now - 86400,  
             now
         )
         .query_async(conn)

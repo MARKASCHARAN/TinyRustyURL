@@ -18,16 +18,15 @@ async fn main() -> std::io::Result<()> {
         })?;
 
     HttpServer::new(move || {
-        // Configure CORS properly
         let cors = Cors::default()
     .allowed_origin("http://localhost:5173")
-    .allowed_methods(vec!["GET", "POST", "OPTIONS"])  // Add OPTIONS
+    .allowed_methods(vec!["GET", "POST", "OPTIONS"])
     .allowed_headers(vec![
         http::header::CONTENT_TYPE,
         http::header::AUTHORIZATION,
     ])
-    .supports_credentials()  // If using cookies/auth
-    .max_age(3600);  // Cache preflight response
+    .supports_credentials()  
+    .max_age(3600); 
 
         App::new()
             .wrap(Logger::default())
