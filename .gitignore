@@ -1,0 +1,15 @@
+# Rust build output
+backend/target/
+
+# Node.js dependencies
+tiny-url-frontend/node_modules/
+
+# Environment files
+*.env
+
+# macOS system files
+.DS_Store
+
+# Logs
+*.log
+
