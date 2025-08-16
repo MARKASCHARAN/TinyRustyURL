@@ -24,10 +24,12 @@ async fn main() -> std::io::Result<()> {
     let base_url = env::var("BASE_URL").unwrap_or_else(|_| format!("http://localhost:{}", port));
     println!("Starting server on port {} with base URL {}", port, base_url);
 
+    // Frontend URL for CORS
+    let cors_origin = env::var("CORS_ORIGIN").unwrap_or_else(|_| base_url.clone());
+
     HttpServer::new(move || {
-        let cors_origin = env::var("CORS_ORIGIN").unwrap_or_else(|_| "*".to_string());
         let cors = Cors::default()
-            .allowed_origin(&cors_origin)
+            .allowed_origin(&cors_origin)  // must be explicit
             .allowed_methods(vec!["GET", "POST", "OPTIONS"])
             .allowed_headers(vec![http::header::CONTENT_TYPE, http::header::AUTHORIZATION])
             .supports_credentials()
