@@ -12,12 +12,17 @@ import { StatsDisplay } from './components/StatsDisplay/StatsDisplay';
 import './App.css';
 
 // --- CHOOSE YOUR THEME ---
-// Each choice now controls the background AND the UI color palette.
-const themeChoice = 'biorhythm';  // NEW: Deep green & teal "bio-digital" theme.
-// const themeChoice = 'nebula';     // A colorful, cosmic cloud.
-// const themeChoice = 'blueprint';  // A technical, glowing grid.
-// const themeChoice = 'sunburst';   // A warm, energetic radiating pattern.
-// const themeChoice = 'matrix';     // Classic digital rain effect.
+type Theme = "biorhythm" | "nebula" | "blueprint" | "sunburst" | "matrix";
+const themeChoice: Theme = 'biorhythm';  // NEW: Deep green & teal "bio-digital" theme.
+// const themeChoice: Theme = 'nebula';     // A colorful, cosmic cloud.
+// const themeChoice: Theme = 'blueprint';  // A technical, glowing grid.
+// const themeChoice: Theme = 'sunburst';   // A warm, energetic radiating pattern.
+// const themeChoice: Theme = 'matrix';     // Classic digital rain effect.
+
+// Allow CSS custom properties in style={{ ... }}
+interface CSSVariables extends React.CSSProperties {
+  [key: `--${string}`]: string | number;
+}
 
 function App() {
   const [shortUrl, setShortUrl] = useState('');
@@ -37,13 +42,19 @@ function App() {
     if (themeChoice !== 'matrix') return null;
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>"{}[];:?';
     return Array.from({ length: 50 }).map((_, i) => {
-      const columnText = Array.from({ length: 50 }).map(() => chars[Math.floor(Math.random() * chars.length)]).join('');
+      const columnText = Array.from({ length: 50 })
+        .map(() => chars[Math.floor(Math.random() * chars.length)])
+        .join('');
       return (
-        <div key={i} className="matrix-column" style={{
+        <div
+          key={i}
+          className="matrix-column"
+          style={{
             left: `${i * 2}%`,
             animationDuration: `${Math.random() * 10 + 5}s`,
             animationDelay: `${Math.random() * 10}s`,
-        }}>
+          }}
+        >
           {columnText}
         </div>
       );
@@ -54,27 +65,44 @@ function App() {
   useGSAP(() => {
     const title = new SplitType('.title', { types: 'chars' });
     gsap.from(title.chars, {
-      opacity: 0, y: 30, rotateX: -90, stagger: 0.04,
-      duration: 0.8, ease: 'power3.out',
+      opacity: 0,
+      y: 30,
+      rotateX: -90,
+      stagger: 0.04,
+      duration: 0.8,
+      ease: 'power3.out',
     });
     gsap.from('.subtitle', {
-        opacity: 0, y: 20, duration: 0.8,
-        ease: 'power3.out', delay: 0.5
+      opacity: 0,
+      y: 20,
+      duration: 0.8,
+      ease: 'power3.out',
+      delay: 0.5,
     });
     gsap.from('.form-card', {
-      opacity: 0, y: 50, scale: 0.98,
-      duration: 0.7, ease: 'expo.out', delay: 0.8
+      opacity: 0,
+      y: 50,
+      scale: 0.98,
+      duration: 0.7,
+      ease: 'expo.out',
+      delay: 0.8,
     });
     if (shortUrl) {
       gsap.from('.result-section', {
-        opacity: 0, y: 50, scale: 0.95,
-        duration: 0.7, ease: 'expo.out'
+        opacity: 0,
+        y: 50,
+        scale: 0.95,
+        duration: 0.7,
+        ease: 'expo.out',
       });
     }
     if (stats) {
       gsap.from('.stats-section', {
-        opacity: 0, y: 50, scale: 0.95,
-        duration: 0.7, ease: 'expo.out'
+        opacity: 0,
+        y: 50,
+        scale: 0.95,
+        duration: 0.7,
+        ease: 'expo.out',
       });
     }
   }, { scope: appRef, dependencies: [shortUrl, stats] });
@@ -97,7 +125,7 @@ function App() {
       setShortUrl(data.short_url);
       toast.success('URL shortened successfully!');
     } catch (error) {
-      console.error("API Error:", error);
+      console.error('API Error:', error);
       toast.error((error as Error).message || 'Failed to shorten URL.');
     } finally {
       setIsLoading(false);
@@ -145,9 +173,36 @@ function App() {
         {themeChoice === 'matrix' && matrixColumns}
         {themeChoice === 'biorhythm' && (
           <>
-            <div className="orb" style={{'--size': '600px', '--x': '-20%', '--y': '-20%', '--hue': '140deg', '--speed': '45s'}} />
-            <div className="orb" style={{'--size': '500px', '--x': '60%', '--y': '30%', '--hue': '190deg', '--speed': '40s'}} />
-            <div className="orb" style={{'--size': '400px', '--x': '20%', '--y': '80%', '--hue': '170deg', '--speed': '35s'}} />
+            <div
+              className="orb"
+              style={{
+                "--size": "600px",
+                "--x": "-20%",
+                "--y": "-20%",
+                "--hue": "140deg",
+                "--speed": "45s",
+              } as CSSVariables}
+            />
+            <div
+              className="orb"
+              style={{
+                "--size": "500px",
+                "--x": "60%",
+                "--y": "30%",
+                "--hue": "190deg",
+                "--speed": "40s",
+              } as CSSVariables}
+            />
+            <div
+              className="orb"
+              style={{
+                "--size": "400px",
+                "--x": "20%",
+                "--y": "80%",
+                "--hue": "170deg",
+                "--speed": "35s",
+              } as CSSVariables}
+            />
           </>
         )}
       </div>
