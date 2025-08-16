@@ -13,8 +13,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     // Redis connection pool
-    let redis_url = env::var("REDIS_URL").unwrap_or_else(|_| "redis://127.0.0.1/0".to_string());
-    let redis_pool = db::create_redis_pool(&redis_url).await
+    let redis_pool = db::create_redis_pool().await
         .map_err(|e| {
             eprintln!("Failed to create Redis pool: {}", e);
             std::io::Error::new(std::io::ErrorKind::Other, "Redis connection failed")

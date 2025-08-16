@@ -2,6 +2,7 @@ use redis::{AsyncCommands, Client, RedisError};
 use redis::aio::ConnectionManager;
 use std::env;
 
+/// Create Redis connection pool using REDIS_URL from environment
 pub async fn create_redis_pool() -> Result<ConnectionManager, RedisError> {
     let redis_url = env::var("REDIS_URL")
         .unwrap_or_else(|_| "redis://127.0.0.1/0".to_string());
@@ -11,6 +12,7 @@ pub async fn create_redis_pool() -> Result<ConnectionManager, RedisError> {
     Ok(manager)
 }
 
+/// Store a URL in Redis
 pub async fn store_url(
     conn: &mut ConnectionManager,
     id: &str,
@@ -19,6 +21,7 @@ pub async fn store_url(
     conn.set(id, url).await
 }
 
+/// Retrieve a URL from Redis
 pub async fn get_url(
     conn: &mut ConnectionManager,
     id: &str,
