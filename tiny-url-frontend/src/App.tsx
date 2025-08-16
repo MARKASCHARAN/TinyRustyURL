@@ -30,6 +30,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isStatsLoading, setIsStatsLoading] = useState(false);
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+  console.log("Using backend URL:", backendUrl);
+
 
   const appRef = useRef(null);
 
