@@ -9,27 +9,26 @@ mod db;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // Initialize logger
     env_logger::init();
 
-    // Redis connection pool
+    // Redis pool
     let redis_pool = db::create_redis_pool().await
         .map_err(|e| {
             eprintln!("Failed to create Redis pool: {}", e);
             std::io::Error::new(std::io::ErrorKind::Other, "Redis connection failed")
         })?;
 
-    // Port and Base URL from environment
+    // Port and base URL
     let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
     let base_url = env::var("BASE_URL").unwrap_or_else(|_| format!("http://localhost:{}", port));
     println!("Starting server on port {} with base URL {}", port, base_url);
 
-    // Frontend URL for CORS
+    // Frontend CORS origin
     let cors_origin = env::var("CORS_ORIGIN").unwrap_or_else(|_| base_url.clone());
 
     HttpServer::new(move || {
         let cors = Cors::default()
-            .allowed_origin(&cors_origin)  // must be explicit
+            .send_wildcard() // allow any origin for dev; change to allowed_origin in production
             .allowed_methods(vec!["GET", "POST", "OPTIONS"])
             .allowed_headers(vec![http::header::CONTENT_TYPE, http::header::AUTHORIZATION])
             .supports_credentials()
