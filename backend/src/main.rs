@@ -23,15 +23,15 @@ async fn main() -> std::io::Result<()> {
     let base_url = env::var("BASE_URL").unwrap_or_else(|_| format!("http://localhost:{}", port));
     println!("Starting server on port {} with base URL {}", port, base_url);
 
-    // Frontend CORS origin
-    let cors_origin = env::var("CORS_ORIGIN").unwrap_or_else(|_| base_url.clone());
+    // Frontend CORS origin (your Vercel URL)
+    let cors_origin = env::var("CORS_ORIGIN")
+        .unwrap_or_else(|_| "https://tiny-rusty-url.vercel.app".to_string());
 
     HttpServer::new(move || {
         let cors = Cors::default()
-            .send_wildcard() // allow any origin for dev; change to allowed_origin in production
+            .allowed_origin(&cors_origin) // Allow only your frontend
             .allowed_methods(vec!["GET", "POST", "OPTIONS"])
-            .allowed_headers(vec![http::header::CONTENT_TYPE, http::header::AUTHORIZATION])
-            .supports_credentials()
+            .allowed_headers(vec![http::header::CONTENT_TYPE])
             .max_age(3600);
 
         App::new()
