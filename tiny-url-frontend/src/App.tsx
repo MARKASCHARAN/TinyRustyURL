@@ -13,13 +13,9 @@ import './App.css';
 
 // --- CHOOSE YOUR THEME ---
 type Theme = "biorhythm" | "nebula" | "blueprint" | "sunburst" | "matrix";
-const themeChoice: Theme = 'biorhythm';  // NEW: Deep green & teal "bio-digital" theme.
-// const themeChoice: Theme = 'nebula';     // A colorful, cosmic cloud.
-// const themeChoice: Theme = 'blueprint';  // A technical, glowing grid.
-// const themeChoice: Theme = 'sunburst';   // A warm, energetic radiating pattern.
-// const themeChoice: Theme = 'matrix';     // Classic digital rain effect.
+const themeChoice: Theme = "biorhythm";  // Change here to switch themes
 
-// Allow CSS custom properties in style={{ ... }}
+// Allow CSS custom properties in style objects
 interface CSSVariables extends React.CSSProperties {
   [key: `--${string}`]: string | number;
 }
@@ -61,7 +57,7 @@ function App() {
     });
   }, []);
 
-  // All other logic (GSAP, API calls) remains the same.
+  // Animations
   useGSAP(() => {
     const title = new SplitType('.title', { types: 'chars' });
     gsap.from(title.chars, {
