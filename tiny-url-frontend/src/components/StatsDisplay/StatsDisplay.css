@@ -1,69 +1,47 @@
-.stats-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  background-color: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+/* ... (all your existing CSS for this component) ... */
+
+/* --- NEW STYLES for Refresh Button --- */
+
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .stats-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #1f2937;
-  font-size: 1.25rem;
-  margin-bottom: 20px;
+  margin: 0; /* Remove default margin */
 }
 
-.stats-grid {
+.refresh-btn {
+  all: unset;
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 6px;
-  background-color: #f9fafb;
-}
-
-.stat-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  place-items: center;
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #eef2ff;
-  color: #4f46e5;
-  flex-shrink: 0;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-.stat-content {
-  flex: 1;
+.refresh-btn:hover:not(:disabled) {
+  color: var(--accent);
+  background-color: var(--surface-2);
+  transform: rotate(90deg);
 }
 
-.stat-label {
-  color: #6b7280;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 2px;
+.refresh-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
-.stat-value {
-  color: #1f2937;
-  font-size: 1.125rem;
-  font-weight: 600;
+.refresh-btn .spinning {
+  animation: spin 1s linear infinite;
 }
 
-@media (max-width: 640px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

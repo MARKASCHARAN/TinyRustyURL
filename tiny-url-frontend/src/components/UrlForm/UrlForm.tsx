@@ -3,7 +3,7 @@ import { FaLink } from 'react-icons/fa';
 import './UrlForm.css';
 
 interface UrlFormProps {
-  onSubmit: (url: string) => Promise<void>;
+  onSubmit: (url: string) => void;
   isLoading: boolean;
 }
 
@@ -11,45 +11,57 @@ export const UrlForm = ({ onSubmit, isLoading }: UrlFormProps) => {
   const [url, setUrl] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!url) {
-      setError('Please enter a URL');
+    if (!url.trim()) {
+      setError('Please enter a URL to shorten.');
       return;
     }
-    try {
-      await onSubmit(url);
-      setError('');
-    } catch (err) {
-      setError('Failed to shorten URL');
+    if (!url.includes('.') || !url.startsWith('http')) {
+        setError('Please enter a valid URL (e.g., https://example.com).');
+        return;
     }
+    setError('');
+    onSubmit(url);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="url-form">
-      <div className="input-group">
-        <FaLink className="input-icon" />
+    <form onSubmit={handleSubmit} className="url-form" noValidate>
+      <div className={`input-group ${error ? 'has-error' : ''}`}>
+        <FaLink className="input-icon" aria-hidden="true" />
         <input
+          id="long-url"
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="Enter your long URL"
+          // --- NEW, SMARTER PLACEHOLDER ---
+          placeholder="Paste your long, complex, or ugly URL here"
           className="url-input"
           required
+          autoFocus
+          aria-invalid={!!error}
+          aria-describedby="form-description"
+          disabled={isLoading}
         />
         <button 
           type="submit" 
           className="submit-btn"
-          disabled={isLoading}
+          disabled={isLoading || !url}
         >
           {isLoading ? (
-            <span className="spinner"></span>
+            <span className="spinner" aria-label="Loading" />
           ) : (
             'Shorten'
           )}
         </button>
       </div>
-      {error && <p className="error-message">{error}</p>}
+      
+      {/* --- NEW DESCRIPTIVE TEXT --- */}
+      <p id="form-description" className="form-description">
+        <b>Tiny, but smart.</b> Create clean, powerful links complete with QR codes and click analytics.
+      </p>
+
+      {error && <p id="url-error" className="error-message">{error}</p>}
     </form>
   );
 };

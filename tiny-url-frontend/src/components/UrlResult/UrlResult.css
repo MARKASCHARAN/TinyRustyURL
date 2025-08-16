@@ -1,65 +1,103 @@
-.url-result {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 .result-card {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  background-color: white;
-  border-radius: 8px;
-  padding: 12px 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  background: linear-gradient(145deg, rgba(138, 43, 226, 0.1), rgba(0, 192, 255, 0.05));
 }
 
-.short-url {
+.result-content {
   flex: 1;
-  display: flex;
-  align-items: center;
-  color: #4f46e5;
+  min-width: 200px;
+}
+
+.result-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+
+.short-url-link {
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-weight: 600;
+  color: var(--text);
   text-decoration: none;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-break: break-all;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: color 0.2s ease;
 }
+.short-url-link:hover { color: var(--accent); }
+.short-url-link svg { font-size: 0.9rem; opacity: 0.6; }
 
-.link-icon {
-  margin-right: 8px;
-  flex-shrink: 0;
-}
-
-.copy-btn {
-  background-color: #eef2ff;
-  color: #4f46e5;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
+/* New styles for the unified action panel */
+.action-panel {
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: background-color 0.2s;
-  margin-left: 12px;
+  gap: 16px;
+  background-color: var(--surface-2);
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.qr-code-wrapper {
   flex-shrink: 0;
+  background-color: var(--surface-1);
+  padding: 8px;
+  border-radius: 8px;
 }
 
-.copy-btn:hover {
-  background-color: #e0e7ff;
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-@media (max-width: 640px) {
-  .result-card {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-  
-  .copy-btn {
-    margin-left: 0;
-    justify-content: center;
-  }
+.action-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  background: var(--surface-3);
+  color: var(--text);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all .2s ease;
+  min-width: 110px;
+}
+
+.action-btn:hover:not(:disabled) {
+  background-color: var(--surface-1);
+  border-color: var(--border);
+}
+
+.copy-btn.copied {
+  background: var(--success);
+  color: #010409;
+  border-color: var(--success);
+}
+
+.analyze-btn:not(:disabled):hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.analyze-btn svg.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

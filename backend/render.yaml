@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: url-backend
+    env: rust
+    buildCommand: "cargo build --release"
+    startCommand: "./target/release/backend"
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: RUST_LOG
+        value: "info"
+      - key: REDIS_URL
+        fromDatabase:
+          name: url-redis
+          property: connectionString
+      - key: CORS_ORIGIN
+        value: "https://your-frontend-domain.com" 
+
+databases:
+  - name: url-redis
+    engine: redis
+    version: 7

@@ -1,87 +1,151 @@
-:root {
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --text: #1f2937;
-  --text-light: #6b7280;
-  --bg: #f9fafb;
-  --white: #ffffff;
-  --error: #ef4444;
+/* 1. FONT & GLOBAL VARIABLES */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
+
+/* --- THEME COLOR PALETTES --- */
+
+/* Default Theme: Nebula */
+:root, [data-theme='nebula'] {
+  --brand: #8A2BE2;
+  --accent: #00C0FF;
+  --bg: #010409;
+  --surface-1: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --text: #e6edf3;
+  --muted: #7d8590;
+  --border: rgba(255, 255, 255, 0.1);
+  --radius: 16px;
+  --success: #2ed573;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* NEW Theme: Biorhythm */
+[data-theme='biorhythm'] {
+  --brand: #42f5b0;
+  --accent: #00e5ff;
+  --bg: #03120f;
+  --surface-1: rgba(66, 245, 176, 0.05);
+  --surface-2: rgba(66, 245, 176, 0.08);
+  --text: #e0f2f1;
+  --muted: #637f7b;
+  --border: rgba(66, 245, 176, 0.15);
 }
+
+/* Other themes can be added here */
+[data-theme='blueprint'] { --accent: #00C0FF; --bg: #010a1a; }
+[data-theme='sunburst'] { --accent: #ff9a00; --bg: #1a0202; }
+[data-theme='matrix'] { --accent: #00ff41; --bg: #000; --border: rgba(0, 255, 65, 0.2); }
+
+
+/* 2. BASE & LAYOUT STYLES */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root, .app { height: 100%; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: var(--bg);
+  margin: 0;
+  font-family: 'Lexend', system-ui, sans-serif;
+  background: var(--bg);
   color: var(--text);
-  line-height: 1.5;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.5s ease;
+  overflow-x: hidden;
+}
+.container { width: 100%; max-width: 720px; margin: 0 auto; padding: 0 24px; }
+.header { padding: 10vh 0 5vh; text-align: center; }
+.title {
+  font-weight: 700;
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  letter-spacing: -0.04em;
+  margin: 0;
+  color: #fff;
+}
+.title .char { display: inline-block; }
+.subtitle { margin: 12px 0 0; color: var(--muted); font-size: clamp(1.1rem, 2.5vw, 1.3rem); }
+.main { padding: 16px 0 48px; }
+.card {
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
+}
+.result-section, .stats-section { margin-top: 32px; }
+
+/* 3. BACKGROUND THEMES */
+.background { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+
+/* --- Theme: Biorhythm --- */
+.background.biorhythm { background-color: var(--bg); }
+.background.biorhythm .orb {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  background: radial-gradient(circle, hsl(var(--hue), 90%, 60%), transparent 60%);
+  filter: blur(100px);
+  opacity: 0.6;
+  top: var(--y);
+  left: var(--x);
+  animation: biorhythm-drift var(--speed) ease-in-out infinite alternate;
+}
+@keyframes biorhythm-drift {
+  from { transform: translate(-20%, -20%) rotate(0deg); opacity: 0.5; }
+  to { transform: translate(20%, 20%) rotate(180deg); opacity: 0.7; }
 }
 
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+/* --- Theme: Nebula --- */
+.background.nebula { background-color: var(--bg); }
+.background.nebula::before, .background.nebula::after {
+  content: ''; position: absolute; inset: -250px;
+  background: radial-gradient(circle, #3a0ca3 0%, transparent 40%);
+  filter: blur(120px); opacity: 0.4;
+  animation: nebula-drift 30s ease-in-out infinite;
+}
+.background.nebula::after {
+  background: radial-gradient(circle, #f72585 0%, transparent 35%);
+  animation-name: nebula-drift-alt; animation-delay: -15s;
+}
+@keyframes nebula-drift {
+  0% { transform: translate(-20%, -20%) rotate(0deg) scale(1); }
+  50% { transform: translate(20%, 10%) rotate(180deg) scale(1.2); }
+  100% { transform: translate(-20%, -20%) rotate(360deg) scale(1); }
+}
+@keyframes nebula-drift-alt {
+  0% { transform: translate(20%, 20%) rotate(0deg) scale(1.1); }
+  50% { transform: translate(-20%, -10%) rotate(-180deg) scale(1); }
+  100% { transform: translate(20%, 20%) rotate(-360deg) scale(1.1); }
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 3rem;
+/* --- Theme: Blueprint Grid --- */
+.background.blueprint {
+  --grid-glow: rgba(0, 192, 255, 0.2);
+  --grid-line: rgba(0, 192, 255, 0.08);
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: pan-grid 60s linear infinite;
 }
+.background.blueprint::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, transparent, var(--bg) 70%); }
+.background.blueprint::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 30%, var(--grid-glow) 100%); animation: blueprint-pulse 8s ease-in-out infinite; opacity: 0.3; }
+@keyframes pan-grid { from { background-position: 0 0; } to { background-position: -60px -60px; } }
+@keyframes blueprint-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.2); opacity: 0.5; } }
 
-.header h1 {
-  font-size: 2.5rem;
-  color: var(--primary);
-  margin-bottom: 0.5rem;
+/* --- Theme: Sunburst --- */
+.background.sunburst { background-color: var(--bg); }
+.background.sunburst::before {
+  content: ''; position: absolute; top: 50%; left: 50%; width: 200vmax; height: 200vmax;
+  background-image: conic-gradient(from 90deg, #ffc947, #ff9a00, #ff6f00, #e54b00, #c22a00, #ff6f00, #ffc947);
+  transform: translate(-50%, -50%); opacity: 0.3;
+  animation: sunburst-spin 20s linear infinite;
 }
+@keyframes sunburst-spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-.header p {
-  color: var(--text-light);
-  font-size: 1.1rem;
+/* --- Theme: Matrix Rain --- */
+.background.matrix { background-color: var(--bg); }
+.matrix-column {
+  position: absolute; top: 0; height: 100%; writing-mode: vertical-rl; text-orientation: upright;
+  font-family: 'Matrix Code NFI', monospace; font-size: 20px; color: var(--accent);
+  text-shadow: 0 0 8px currentColor; user-select: none;
+  animation: matrix-fall linear infinite;
 }
-
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  width: 100%;
-}
-
-.stats-button {
-  background-color: var(--primary);
-  color: var(--white);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.stats-button:hover {
-  background-color: var(--primary-hover);
-}
-
-@media (max-width: 768px) {
-  .header h1 {
-    font-size: 2rem;
-  }
-  
-  .header p {
-    font-size: 1rem;
-  }
-  
-  .app {
-    padding: 1.5rem 1rem;
-  }
-}
+@keyframes matrix-fall { from { transform: translateY(-100%); } to { transform: translateY(100%); } }

@@ -1,8 +1,12 @@
 use redis::{AsyncCommands, Client, RedisError};
 use redis::aio::ConnectionManager;
+use std::env;
 
 pub async fn create_redis_pool() -> Result<ConnectionManager, RedisError> {
-    let client = redis::Client::open("redis://127.0.0.1/0")?; 
+    let redis_url = env::var("REDIS_URL")
+        .unwrap_or_else(|_| "redis://127.0.0.1/0".to_string());
+    
+    let client = Client::open(redis_url)?;
     let manager = ConnectionManager::new(client).await?;
     Ok(manager)
 }
