@@ -13,10 +13,11 @@ use super::models;
 pub async fn shorten(
     req: web::Json<models::ShortenRequest>,
     pool: web::Data<ConnectionManager>,
+    base_url: web::Data<String>,
 ) -> HttpResponse {
     let mut conn = pool.get_ref().clone();
     let id = nanoid!(6);
-    
+
     if let Err(e) = validate_url(&req.url) {
         return HttpResponse::BadRequest().json(json!({
             "error": "Invalid URL",
@@ -28,12 +29,12 @@ pub async fn shorten(
         .arg(&id)
         .arg(&req.url)
         .arg("EX")
-        .arg(60 * 60 * 24 * 30)  
+        .arg(60 * 60 * 24 * 30)
         .query_async::<_, String>(&mut conn)
         .await
     {
         Ok(_) => HttpResponse::Ok().json(models::ShortenResponse {
-            short_url: format!("http://localhost:8080/{}", id),
+            short_url: format!("{}/{}", base_url.get_ref(), id),
         }),
         Err(e) => {
             log::error!("Failed to store URL: {}", e);
@@ -44,6 +45,7 @@ pub async fn shorten(
         }
     }
 }
+
 
 #[get("/{id}")]
 pub async fn redirect(
